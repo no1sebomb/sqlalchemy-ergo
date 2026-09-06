@@ -9,7 +9,7 @@ readme = "README.md"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE.md"]
 requires-python = ">=3.10"
-authors = [{ name = "no1sebomb", email = "amsftwr@gmail.com" }]
+authors = [{ name = "no1sebomb", email = "noisebombch@gmail.com" }]
 keywords = ["sqlalchemy", "orm", "column_property", "descriptor", "relationship"]
 classifiers = [
     "Development Status :: 3 - Alpha",
