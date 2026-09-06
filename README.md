@@ -1,5 +1,11 @@
 # sqlalchemy-ergo
 
+[![CI](https://github.com/no1sebomb/sqlalchemy-ergo/actions/workflows/ci.yml/badge.svg)](https://github.com/no1sebomb/sqlalchemy-ergo/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/sqlalchemy-ergo.svg)](https://pypi.org/project/sqlalchemy-ergo/)
+[![Python](https://img.shields.io/pypi/pyversions/sqlalchemy-ergo.svg)](https://pypi.org/project/sqlalchemy-ergo/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-d71f00.svg)](https://www.sqlalchemy.org/)
+[![License](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE.md)
+
 Ergonomic helpers for SQLAlchemy 2.0 ORM models — small, focused tools that remove
 the boilerplate you end up rewriting in every project.
 
@@ -63,13 +69,11 @@ class Human(Base):
     books: Mapped[list["Book"]] = relationship()
     tags: Mapped[list["Tag"]] = relationship(secondary=human_tag)
 
-    # Narrow the count down. `where` is the SQL side, `where_func` the same rule
-    # in Python, used when the relationship is already loaded — both are needed
-    # for the two paths to agree.
+    # Narrow the count down. The Python-side predicate is derived from the SQL
+    # expression, so both access paths filter by one and the same rule.
     total_active_books = counter_property(
         books,
         where="Book.active.is_(True)",  # or a SQL expression / callable
-        where_func=lambda book: book.active,
     )
 
     # Many-to-many works the same way
