@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "sqlalchemy-ergo"
 description = "Ergonomic helpers and descriptors for SQLAlchemy ORM models."
 readme = "README.md"
-license = "GPL-3.0-or-later"
+license = "MIT"
 license-files = ["LICENSE.md"]
 requires-python = ">=3.10"
 authors = [{ name = "no1sebomb", email = "noisebombch@gmail.com" }]

@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/sqlalchemy-ergo.svg)](https://pypi.org/project/sqlalchemy-ergo/)
 [![Python](https://img.shields.io/pypi/pyversions/sqlalchemy-ergo.svg)](https://pypi.org/project/sqlalchemy-ergo/)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-d71f00.svg)](https://www.sqlalchemy.org/)
-[![License](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE.md)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
 Ergonomic helpers for SQLAlchemy 2.0 ORM models — small, focused tools that remove
 the boilerplate you end up rewriting in every project.
@@ -169,4 +169,4 @@ mypy
 
 ## License
 
-GPL-3.0-or-later. See [LICENSE.md](LICENSE.md).
+MIT. See [LICENSE.md](LICENSE.md).
