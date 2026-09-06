@@ -1,0 +1,29 @@
+name: Helper request
+description: Suggest a new helper, or an option on an existing one
+labels: ["enhancement"]
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The boilerplate you are writing today
+      description: >
+        The SQLAlchemy code this would replace, as you write it now. A helper
+        earns its place by removing something real, so this is the important part.
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would rather write
+      render: python
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: >
+        Relationship kinds it has to cover, loader options it has to survive,
+        or prior art in other libraries.

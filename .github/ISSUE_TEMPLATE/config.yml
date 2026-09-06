@@ -1,0 +1,7 @@
+blank_issues_enabled: true
+contact_links:
+  - name: SQLAlchemy usage question
+    url: https://github.com/sqlalchemy/sqlalchemy/discussions
+    about: >
+      Questions about SQLAlchemy itself, rather than this library, get better
+      answers upstream.

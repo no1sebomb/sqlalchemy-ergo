@@ -1,0 +1,70 @@
+name: Bug report
+description: Something behaves differently than documented
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, check the **Known limitations** section of the README --
+        mixins and the async lazy fallback are documented gaps, not bugs.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: model
+    attributes:
+      label: Model definition
+      description: >
+        The mapped classes and the counter, trimmed to the smallest version that
+        still shows the problem. Relationship arguments matter -- `secondary`,
+        `primaryjoin`, `viewonly`, inheritance.
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: access
+    attributes:
+      label: How the value was read
+      description: >
+        The query and the attribute access, including any loader options
+        (`selectinload`, `undefer`, `joinedload`). Emitted SQL helps if you have it.
+      render: python
+    validations:
+      required: true
+
+  - type: dropdown
+    id: path
+    attributes:
+      label: Which access path
+      options:
+        - Relationship not loaded (count comes from SQL)
+        - Relationship already loaded (counted in Python)
+        - Class-level access (order_by / where / undefer)
+        - Unsaved object
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: sqlalchemy-ergo, SQLAlchemy, Python, and the database driver.
+      placeholder: "sqlalchemy-ergo 0.1.0, SQLAlchemy 2.0.52, Python 3.12, psycopg 3.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback
+      description: Full traceback, if there was one.
+      render: text

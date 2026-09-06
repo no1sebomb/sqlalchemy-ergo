@@ -1,0 +1,36 @@
+version: 2
+
+updates:
+  # Action versions go stale silently -- a workflow keeps running on an old
+  # major until the day it is deprecated and the release fails.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"
+
+  # Dev dependencies only: the runtime dependency is a range, not a pin.
+  # The point is to run the suite against new SQLAlchemy releases early --
+  # this project reads two private SQLAlchemy APIs, and CI is what tells us
+  # when one of them moves.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      pre-commit:
+        patterns: ["*"]
