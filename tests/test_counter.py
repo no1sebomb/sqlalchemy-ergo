@@ -10,8 +10,10 @@ from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     Session,
+    foreign,
     mapped_column,
     relationship,
+    remote,
     selectinload,
     undefer,
 )
@@ -539,3 +541,84 @@ def test_counters_from_another_registry_are_left_alone(engine: Engine) -> None:
 
     with Session(engine) as session:
         assert session.scalars(select(Hive)).one().total_bees == 2
+
+
+def test_extra_conditions_in_primaryjoin_are_counted(engine: Engine) -> None:
+    """A relationship that filters in its own primaryjoin counts the filtered rows.
+
+    The whole primaryjoin becomes the subquery's WHERE clause, and the loaded
+    collection was already filtered by it, so both paths agree for free.
+    """
+
+    class SoftBase(DeclarativeBase):
+        pass
+
+    class Author(SoftBase):
+        __tablename__ = "author"
+
+        id: Mapped[int] = mapped_column(primary_key=True)
+        is_deleted: Mapped[bool] = mapped_column(default=False)
+
+        # Soft delete folded into the relationship itself
+        papers: Mapped[list[Paper]] = relationship(
+            primaryjoin=lambda: (Author.id == Paper.author_id) & Paper.is_deleted.is_(False),
+            viewonly=True,
+        )
+        # Self-referential, with the sides marked explicitly
+        students: Mapped[list[Author]] = relationship(
+            primaryjoin=lambda: (
+                (Author.id == remote(foreign(Author.mentor_id)))
+                & remote(Author.is_deleted).is_(False)
+            ),
+            viewonly=True,
+        )
+        mentor_id: Mapped[int | None] = mapped_column(ForeignKey("author.id"))
+
+        total_papers = counter_property(papers)
+        total_students = counter_property(students)
+
+    class Paper(SoftBase):
+        __tablename__ = "paper"
+
+        id: Mapped[int] = mapped_column(primary_key=True)
+        author_id: Mapped[int] = mapped_column(ForeignKey("author.id"))
+        is_deleted: Mapped[bool] = mapped_column(default=False)
+
+    SoftBase.metadata.create_all(engine)
+
+    with Session(engine) as session:
+        session.add(
+            Author(
+                id=1,
+                papers=[],
+                # two live papers, one soft-deleted
+            )
+        )
+        session.add_all(
+            [
+                Paper(author_id=1, is_deleted=False),
+                Paper(author_id=1, is_deleted=False),
+                Paper(author_id=1, is_deleted=True),
+                Author(id=2, mentor_id=1, is_deleted=False),
+                Author(id=3, mentor_id=1, is_deleted=True),
+            ]
+        )
+        session.commit()
+
+    # Counted in SQL: the alias carries the extra condition, not the parent row
+    with Session(engine) as session:
+        author = session.get(Author, 1)
+        assert author is not None
+        assert author.total_papers == 2
+        assert author.total_students == 1
+
+    # Counted in Python: the collection was already filtered on load
+    with Session(engine) as session:
+        author = session.scalars(
+            select(Author)
+            .where(Author.id == 1)
+            .options(selectinload(Author.papers), selectinload(Author.students))
+        ).one()
+
+        assert author.total_papers == 2
+        assert author.total_students == 1
