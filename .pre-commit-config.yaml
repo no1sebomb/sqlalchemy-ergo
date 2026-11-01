@@ -14,15 +14,15 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.6
+    rev: v0.17.3
     hooks:
       - id: ruff
         args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.3.1
+    rev: v2.4.1
     hooks:
       - id: mypy
-        additional_dependencies: ["sqlalchemy>=2.0.52"]
+        additional_dependencies: ["sqlalchemy>=2.1.6"]
         pass_filenames: false
